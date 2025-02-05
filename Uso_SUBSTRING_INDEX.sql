@@ -52,3 +52,99 @@ VALUES (nombreSeleccionado,apellidoPSeleccionado,apellidoMSeleccionado,correoSel
 SET i =i + 1;
 END WHILE;
 END//
+
+
+##Ejemplo de Loop
+DELIMITER //
+CREATE PROCEDURE disminuir_stock_categoria_loop(
+IN p_categoria VARCHAR(50),
+IN p_cantidad INT 
+)
+BEGIN
+DECLARE done INT DEFAULT FALSE;
+DECLARE v_producto_id INT;
+DECLARE cur CURSOR FOR
+SELECT producto_id FROM productos WHERE categoria=p_categoria;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done=TRUE;
+
+OPEN cur;
+read_loop: LOOP 
+FETCH cur INTO v_producto_id;
+IF done THEN
+LEAVE read_loop;
+END IF;
+UPDATE productos
+SET stock= greatest(stock - p_cantidad,0)
+WHERE producto_id = v_producto_id;
+END LOOP;
+CLOSE cur;
+END //
+
+
+## LOOP2 (no sirve)
+DELIMITER //
+CREATE PROCEDURE desactivar_producto_sin_stock()
+BEGIN
+DECLARE v_producto_id INT;
+SELECT producto_id INTO v_producto_id FROM productos WHERE stock='0' LIMIT 1;
+REPEAT
+UPDATE productos SET estado='inactivo' WHERE producto_id = v_producto_id;
+SELECT product_id INTO v_producto_id FROM producto WHERE stock=0 LIMIT 1;
+UNTIL v_producto_id IS NULL
+END REPEAT;
+END //
+
+
+##DETERMINISTA
+DELIMITER //
+CREATE FUNCTION calcular_cuadrado(n INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+RETURN n*n;
+END //
+
+##NO DETERMINISTAS
+DELIMITER //
+
+CREATE FUNCTION calcular_cuadrado_aleatorio(n INT)
+RETURNS INT
+NOT DETERMINISTIC
+NO SQL
+BEGIN
+    RETURN (n * n) + FLOOR(RAND() * 10);  
+END //
+
+	
+##INTENTO 2 DE INACTIVO
+DELIMITER //
+CREATE PROCEDURE sin_stock()
+BEGIN
+    DECLARE v_producto_id INT;
+    DECLARE done BOOLEAN DEFAULT FALSE;
+    
+    DECLARE cur CURSOR FOR 
+        SELECT producto_id FROM productos WHERE stock = 0;
+        
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    
+    OPEN cur;
+    
+    bucle: LOOP
+        FETCH cur INTO v_producto_id;
+        IF done THEN
+            LEAVE bucle;
+        END IF;
+        UPDATE productos SET estado = 'inactivo' WHERE producto_id = v_producto_id;
+    END LOOP;
+    
+    CLOSE cur;
+END //
+DELIMITER ;
+
+
+
+
+
+
+

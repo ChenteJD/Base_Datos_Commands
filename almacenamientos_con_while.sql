@@ -94,14 +94,14 @@ DELIMITER ;
 
 ##Tarea
 DELIMITER //
-CREATE PROCEDURE SaludoPorHora(IN nombreUsuario VARCHAR(50), IN horaIngresada INT)
+CREATE PROCEDURE SaludoPorHora(IN nombreUsuario VARCHAR(50), IN horaIngresada VARCHAR(50))
 BEGIN
-    IF horaIngresada < 0 OR horaIngresada > 23 THEN
-        SELECT 'La hora ingresada no es válida. Por favor, introduce un valor entre 0 y 23.' AS MensajeError;
+    IF horaIngresada < 0 OR horaIngresada > '23:00' THEN
+        SELECT 'La hora ingresada no es válida. Por favor, introduce un valor entre 0:00 y 23:00.' AS MensajeError;
     ELSE
-        IF horaIngresada >= 0 AND horaIngresada < 12 THEN
+        IF horaIngresada >= 0 AND horaIngresada < '12:00' THEN
             SELECT CONCAT('¡Buenos días, ', nombreUsuario, '!') AS Saludo;
-        ELSEIF horaIngresada >= 12 AND horaIngresada < 18 THEN
+        ELSEIF horaIngresada >= '12:00' AND horaIngresada < '18:00' THEN
             SELECT CONCAT('¡Buenas tardes, ', nombreUsuario, '!') AS Saludo;
         ELSE
             SELECT CONCAT('¡Buenas noches, ', nombreUsuario, '!') AS Saludo;
@@ -109,6 +109,8 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+
 
 
 
