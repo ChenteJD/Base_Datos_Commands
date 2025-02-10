@@ -2,20 +2,20 @@ DELIMITER //
 
 CREATE PROCEDURE GestionarClientes(
     IN accion VARCHAR(10),
-    IN p_cliente_id INT,
-    IN p_nombre VARCHAR(100),
-    IN p_apellidop VARCHAR(100),
-    IN p_apellidom VARCHAR(100),
-    IN p_correo VARCHAR(150),
-    IN p_telefono VARCHAR(20)
+    IN new_cliente_id INT,
+    IN new_nombre VARCHAR(100),
+    IN new_apellidop VARCHAR(100),
+    IN new_apellidom VARCHAR(100),
+    IN new_correo VARCHAR(150),
+    IN new_telefono VARCHAR(20)
 )
 BEGIN
     IF accion = 'INSERTAR' THEN
         INSERT INTO clientes (nombre, apellidop, apellidom, correo, telefono)
-        VALUES (p_nombre, p_apellidop, p_apellidom, p_correo, p_telefono);
+        VALUES (new_nombre, new_apellidop, new_apellidom, new_correo, new_telefono);
     
     ELSEIF accion = 'BUSCAR' THEN
-        SELECT * FROM clientes WHERE cliente_id = p_cliente_id;
+        SELECT * FROM clientes WHERE cliente_id = new_cliente_id;
         
     ELSEIF accion = 'LEER' THEN
         SELECT * FROM clientes;
